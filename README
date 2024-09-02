@@ -1,0 +1,29 @@
+Nume: Micu Alexandru
+Grupa: 341C3
+
+		            Tema 2 SPRC - Microservicii & Docker
+
+    Pentru rularea proiectului este nevoie de a rula în rădăcină comanda 
+(variabilele de mediu sunt încărcate direct din fișierul .env):
+    docker-compose up --build
+
+    Backend-ul este implementat în .NET și funcționalitatea fiind împărțită
+între 3 controllere: Countries, Towns și Temperatures fiecare pentru ruta
+respectivă din enunț și care poate răspunde la endpoint-urile date prin swagger:
+http://localhost:5000/swagger/index.html. Pentru fiecare controller există
+un repository și o colecție corespunzătoare în baza de date. Pentru a construi
+imaginea pentru API se poate rula direct docker build . în folderul rădăcină
+a proiectului.
+
+    Baza de date este MongoDB deoarece are suport destul de consistent pentru
+Dockere, query-uri optimizate pentru find all documents și pentru query-uri
+care dau numai id-uri și suportul pentru .NET pentru Code-Based Databases
+(inclusiv configurărire de index de unicitate). Configurarea inițială se
+găsește în Models/BackendContext.cs, volumul bazei de date e salvat în /data/db,
+configurarea e conform fișierului .env și poate fii accesată la localhost:27017.
+
+    Mongo-Express e utilitarul de gestiune folosit deoarece e dezvoltat specific
+pentru MongoDB, și este ușor de setat pe docker alături de containerul de mongo.
+Mongo-Express expune portul 8081 și pentru autentificarea ca admin e nevoie de
+credențialele admin:pass.
+

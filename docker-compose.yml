@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    container_name: ${MONGO_HOST}
+    ports:
+      - 27017:27017
+    volumes:
+      - db_data:/data/db
+    networks:
+      - back_net
+      - db_net
+
+  mongo-express:
+    image: mongo-express:latest
+    restart: always
+    ports:
+      - 8081:8081
+    container_name: mongo-express
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: ${MONGO_HOST}
+    depends_on:
+      - mongo
+    networks:
+      - db_net
+
+  backend:
+    build: ./src
+    restart: always
+    ports:
+      - 5000:4040
+    container_name: backend
+    environment:
+      MongoDB__Host: ${MONGO_HOST}
+      MongoDB__Port: 27017
+      MongoDB__Database: ${MONGO_DATABASE}
+      MongoDB__User: ${MONGO_ROOT_USERNAME}
+      MongoDB__Password: ${MONGO_ROOT_PASSWORD}
+    depends_on:
+      - mongo
+    networks:
+      - back_net
+
+volumes:
+  db_data:
+    name: db_data
+
+networks:
+  back_net:
+    name: back_net
+  db_net:
+    name: db_net  
